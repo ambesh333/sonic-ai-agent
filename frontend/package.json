@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@copilotkit/react-core": "^1.5.14",
+    "@copilotkit/react-ui": "^1.5.14",
     "@hookform/resolvers": "^3.9.1",
     "@langchain/community": "^0.3.28",
     "@langchain/core": "^0.3.37",
+    "@langchain/langgraph": "^0.2.44",
     "@langchain/openai": "^0.4.2",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
