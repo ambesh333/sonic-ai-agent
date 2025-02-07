@@ -1,7 +1,7 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { ethers } from "ethers";
-
+import { provider } from "../utils/rpc";
 const balanceSchema = z.object({
   walletAddress: z.string().describe("The wallet address to get the balance for."),
 });
@@ -9,8 +9,6 @@ const balanceSchema = z.object({
 const getWalletBalance = tool(
   async ({ walletAddress }) => {
     try {
-      const rpcUrl = "https://rpc.blaze.soniclabs.com";
-      const provider = new ethers.JsonRpcProvider(rpcUrl);
       const balanceWei = await provider.getBalance(walletAddress);
       const balanceEther = ethers.formatEther(balanceWei);
       return `The balance of wallet ${walletAddress} is ${balanceEther} Sonic.`;
