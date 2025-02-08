@@ -3,7 +3,7 @@
     "dockerfile_lines": [],
     "dependencies": ["."],
     "graphs": {
-      "agent": "./src/agent.ts:app"
+      "agent": "./src/agent.ts:agent"
     },
     "env": ".env"
 }

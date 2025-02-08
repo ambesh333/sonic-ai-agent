@@ -7,7 +7,7 @@ import { cookieToInitialState } from "wagmi"
 import { getConfig } from "@/lib/config"
 import { headers } from "next/headers"
 import { Providers } from "@/components/wagmiProvider"
-import { CopilotKit } from "@copilotkit/react-core";
+
 
 export default async function RootLayout({
   children,
@@ -27,9 +27,7 @@ export default async function RootLayout({
         <Providers initialState={initialState}>
           <SidebarProvider>
             <AppSidebar />
-            <CopilotKit publicApiKey="ck_pub_b2e98f385638148a792e83151883e4f8"> 
               {children}
-            </CopilotKit>
           </SidebarProvider>
         </Providers>
         </ThemeProvider>

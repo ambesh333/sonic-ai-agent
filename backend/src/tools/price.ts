@@ -2,7 +2,7 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { ethers } from "ethers";
 import PythAbi from "./PythAbi.json"; // Adjust the path as necessary
-33
+
 
 const getPythPriceSchema = z.object({
   priceId: z.string().describe("The price feed ID to query from the Pyth oracle."),
