@@ -5,8 +5,6 @@ import { provider } from "../utils/rpc";
 const estimateGas = tool(
   async () => {
     try {
-
-
       const feeData = await provider.getFeeData();
 
       // Convert values from Wei to Gwei for readability
