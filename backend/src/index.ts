@@ -3,11 +3,12 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import { graph } from "./workflow";
 import { HumanMessage } from "@langchain/core/messages";
-
+import cors from "cors";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 async function run(message: string) {
   const finalState = await graph.invoke({
@@ -22,6 +23,17 @@ app.post("/agent", async (req: Request, res: Response) => {
 
   try {
     const responseMessage = await run(message);
+    res.json({ response: responseMessage });
+  } catch (error:any) {
+    res.status(500).send(`Error: ${error.message}`);
+  }
+});
+
+app.post("/agent_dummy", async (req: Request, res: Response) => {
+  const message = req.body.message;
+
+  try {
+    const responseMessage = message+"agent dummy response";
     res.json({ response: responseMessage });
   } catch (error:any) {
     res.status(500).send(`Error: ${error.message}`);
