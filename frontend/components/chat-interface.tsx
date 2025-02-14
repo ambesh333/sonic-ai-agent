@@ -2,8 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { motion, AnimatePresence } from "framer-motion";
 import ActionSearchBar from "./search-box";
+import ChatBox from "./ChatBox/main";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { setQuery, setChatMode, setInput } from "@/store/chatSlice";
 import {
   Search,
   Send,
@@ -13,9 +17,6 @@ import {
   PlaneTakeoff,
   AudioLines,
 } from "lucide-react";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ChatBox from "./ChatBox/main";
 
 const tags = [
   "Clean account fields",
@@ -68,19 +69,26 @@ const allActions = [
   },
 ];
 
-/* ---------------------------------------------
+/* -------------------------------------------------------------------------
    IntroSection Component
-   - Renders the initial UI with title, tags, and the search bar
----------------------------------------------- */
-function IntroSection({
-  query,
-  setQuery,
-  onSearchClick,
-}: {
-  query: string;
-  setQuery: (q: string) => void;
-  onSearchClick: () => void;
-}) {
+   - Renders the initial UI with title, tags, and the search bar.
+   - Uses Redux to read and update the query.
+------------------------------------------------------------------------- */
+function IntroSection() {
+  const dispatch = useDispatch<AppDispatch>();
+  const query = useSelector((state: RootState) => state.chat.query);
+
+  const handleInputChange = (value: string) => {
+    dispatch(setQuery(value));
+  };
+
+  const handleSearchClick = () => {
+    // Enter chat mode using the current query.
+    dispatch(setChatMode(true));
+    dispatch(setInput(query));
+    dispatch(setQuery(""));
+  };
+
   return (
     <motion.div
       key="intro"
@@ -89,7 +97,7 @@ function IntroSection({
       exit={{ opacity: 0, transition: { duration: 0.3 } }}
       className="flex flex-col w-full max-w-3xl divide-y divide-transparent"
     >
-      {/* Empty space */}
+      {/* Spacer */}
       <div className="h-2/7"></div>
       {/* Main content */}
       <div className="h-3/7 flex flex-col items-center">
@@ -107,9 +115,9 @@ function IntroSection({
           <ActionSearchBar
             actions={allActions}
             query={query}
-            setQuery={setQuery}
+            setQuery={handleInputChange}
             showSuggestions={true}
-            onSearchClick={onSearchClick}
+            onSearchClick={handleSearchClick}
           />
         </Card>
       </div>
@@ -117,25 +125,32 @@ function IntroSection({
   );
 }
 
-/* ---------------------------------------------
+/* -------------------------------------------------------------------------
    ChatSection Component
-   - Renders the chat UI along with the search bar (moved to the bottom)
-   - Includes a Back button to return to the intro mode
----------------------------------------------- */
-  
-function ChatSection({
-  query,
-  setQuery,
-  onSearchClick,
-  input,
-  onBack,
-}: {
-  query: string;
-  setQuery: (q: string) => void;
-  onSearchClick: () => void;
-  input: string;
-  onBack: () => void;
-}) {
+   - Renders the chat UI along with a bottom search bar.
+   - Includes a “Back” button to exit chat mode.
+   - Uses Redux to read/update the query and input.
+------------------------------------------------------------------------- */
+function ChatSection() {
+  const dispatch = useDispatch<AppDispatch>();
+  const query = useSelector((state: RootState) => state.chat.query);
+  const input = useSelector((state: RootState) => state.chat.input);
+
+  const handleInputChange = (value: string) => {
+    dispatch(setQuery(value));
+  };
+
+  // (Optional) In chat mode you might still want to re-trigger a search action.
+  const handleSearchClick = () => {
+    dispatch(setChatMode(true));
+    dispatch(setInput(query));
+    dispatch(setQuery(""));
+  };
+
+  const handleBackClick = () => {
+    dispatch(setChatMode(false));
+  };
+
   return (
     <motion.div
       key="chat"
@@ -144,22 +159,22 @@ function ChatSection({
       exit={{ opacity: 0, y: 50 }}
       className="relative flex flex-col w-full max-w-3xl h-full h-svh max-h-[calc(100vh-10rem)]"
     >
-      {/* Scrollable Chat Area with extra bottom padding */}
+      {/* Chat area */}
       <div className="flex-1 pb-32 overflow-y-auto overflow-x-hidden">
-        <ChatBox input={input} />
+        <ChatBox />
       </div>
 
-      {/* Fixed Search Bar at Bottom */}
+      {/* Fixed search bar at bottom */}
       <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <Card className="w-full max-w-3xl px-4 border border-border rounded-lg shadow-md mx-auto">
           <ActionSearchBar
             actions={allActions}
             query={query}
-            setQuery={setQuery}
+            setQuery={handleInputChange}
             showSuggestions={false}
-            onSearchClick={onSearchClick}
+            onSearchClick={handleSearchClick}
           />
-          <Button variant="outline" className="w-full " onClick={onBack}>
+          <Button variant="outline" className="w-full" onClick={handleBackClick}>
             Back
           </Button>
         </Card>
@@ -168,45 +183,17 @@ function ChatSection({
   );
 }
 
-
-/* ---------------------------------------------
-   ChatInterface (Main Component)
-   - Decides whether to show the Intro or Chat mode.
-   - Uses AnimatePresence for smooth transitions.
----------------------------------------------- */
+/* -------------------------------------------------------------------------
+   ChatInterface Component
+   - Decides whether to show the Intro or Chat mode based on Redux state.
+------------------------------------------------------------------------- */
 export function ChatInterface() {
-  const [query, setQuery] = useState("");
-  const [chatMode, setChatMode] = useState(false);
-  const [input , setInput] = useState("");
-
-  const handleSearchClick = () => {
-    setChatMode(true);
-    setInput(query);
-    setQuery("");
-  };
-
-  const handleBackClick = () => {
-    setChatMode(false);
-  };
+  const chatMode = useSelector((state: RootState) => state.chat.chatMode);
 
   return (
     <div className="flex flex-col items-center justify-center p-6 max-h-[calc(100vh-5rem)] min-h-[calc(100vh-5rem)]">
       <AnimatePresence mode="wait">
-        {!chatMode ? (
-          <IntroSection
-            query={query}
-            setQuery={setQuery}
-            onSearchClick={handleSearchClick}
-          />
-        ) : (
-          <ChatSection
-            query={query}
-            setQuery={setQuery}
-            input={input}
-            onSearchClick={handleSearchClick}
-            onBack={handleBackClick}
-          />
-        )}
+        {!chatMode ? <IntroSection /> : <ChatSection />}
       </AnimatePresence>
     </div>
   );

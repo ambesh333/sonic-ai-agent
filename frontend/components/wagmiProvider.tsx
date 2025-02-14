@@ -10,7 +10,7 @@ type Props = {
   initialState?: State,
 }
 
-export function Providers({ children, initialState }: Props) {
+export function WagmiProviders({ children, initialState }: Props) {
   const [config] = useState(() => getConfig())
   const [queryClient] = useState(() => new QueryClient())
 

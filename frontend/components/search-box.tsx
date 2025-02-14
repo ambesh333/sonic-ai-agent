@@ -109,6 +109,12 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
     setIsFocused(true)
   }
 
+  const handleActionClick = (action: Action) => {
+    setSelectedAction(action);
+    setQuery(action.label);
+    onSearchClick();
+  };
+
   return (
     <motion.div className="w-full max-w-xl mx-auto">
       <div className="relative flex flex-col justify-start items-center">
@@ -171,7 +177,7 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
                       className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
                       variants={item}
                       layout
-                      onClick={() => setSelectedAction(action)}
+                      onClick={() => handleActionClick(action)}
                     >
                       <div className="flex items-center gap-2 justify-between">
                         <div className="flex items-center gap-2">
@@ -187,12 +193,6 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
                     </motion.li>
                   ))}
                 </motion.ul>
-                <div className="mt-2 px-3 py-2 border-t border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>Press ⌘K to open commands</span>
-                    <span>ESC to cancel</span>
-                  </div>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>

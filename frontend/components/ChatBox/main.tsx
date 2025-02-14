@@ -1,42 +1,26 @@
-// filepath: /home/ambesh/Desktop/social-oracle./frontend/components/ChatBox/main.tsx
+// filepath: /home/ambesh/Desktop/social-oracle/frontend/components/ChatBox/main.tsx
+"use client";
 
 import { motion } from "framer-motion";
-import React, { useEffect, useReducer, useRef, useCallback, memo } from "react";
+import React, { useEffect, useRef, memo } from "react";
 import { useAccount } from "wagmi";
 import Jazzicon from "react-jazzicon";
 import axios from "axios";
-
-// ---------------------------------------------------------------------------
-// Types and Reducer
-// ---------------------------------------------------------------------------
-
-export interface ChatMessage {
-  id: string;
-  sender: "user" | "ai";
-  text: string;
-  timestamp: number; // used for ordering messages
-}
-
-type ChatAction =
-  | { type: "ADD_MESSAGE"; payload: ChatMessage }
-  | { type: "UPDATE_MESSAGE"; payload: { id: string; text: string } };
-
-const chatReducer = (state: ChatMessage[], action: ChatAction): ChatMessage[] => {
-  switch (action.type) {
-    case "ADD_MESSAGE":
-      return [...state, action.payload];
-    case "UPDATE_MESSAGE":
-      return state.map((msg) =>
-        msg.id === action.payload.id ? { ...msg, text: action.payload.text } : msg
-      );
-    default:
-      return state;
-  }
-};
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { addMessage, updateMessage } from "@/store/chatSlice";
+import { useMutation } from "@tanstack/react-query";
 
 // ---------------------------------------------------------------------------
 // Presentational Components (Memoized)
 // ---------------------------------------------------------------------------
+
+interface ChatMessage {
+  id: string;
+  sender: "user" | "ai";
+  text: string;
+  timestamp: number;
+}
 
 interface MessageItemProps {
   message: ChatMessage;
@@ -100,79 +84,69 @@ TypingIndicator.displayName = "TypingIndicator";
 // ChatBox Component
 // ---------------------------------------------------------------------------
 
-interface ChatBoxProps {
-  input: string;
-}
-
-// Use the public environment variable. Ensure your .env file contains:
-// NEXT_PUBLIC_BACKEND_URL="http://localhost:3001"
+// Base endpoint for API calls. Ensure your .env file contains NEXT_PUBLIC_BACKEND_URL.
 const baseEndpoint = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
-function ChatBox({ input }: ChatBoxProps) {
+function ChatBox() {
   const { address } = useAccount();
-  const [messages, dispatch] = useReducer(chatReducer, []);
+  const dispatch = useDispatch<AppDispatch>();
+  const messages = useSelector((state: RootState) => state.chat.messages);
+  const input = useSelector((state: RootState) => state.chat.input);
   const lastProcessedInput = useRef<string>("");
 
-  // useCallback ensures the function isn’t recreated on every render.
-  const fetchAiResponse = useCallback(
-    async (userInput: string, aiMessageId: string) => {
-      // Append "/agent" to the base endpoint.
-      const apiEndpoint = `${baseEndpoint}/agent`;
-      console.log("Calling API endpoint:", apiEndpoint);
-
-      try {
-        const response = await axios.post(
-          apiEndpoint,
-          { message: userInput },
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        console.log("API response:", response.data.response);
-        const aiResponse: string = response.data.response;
-        dispatch({ type: "UPDATE_MESSAGE", payload: { id: aiMessageId, text: aiResponse } });
-      } catch (error) {
-        console.error("Error fetching AI response:", error);
-        dispatch({
-          type: "UPDATE_MESSAGE",
-          payload: { id: aiMessageId, text: "Error: Unable to fetch AI response." },
-        });
-      }
+  // Tanstack Query mutation to fetch the AI response.
+  const mutation = useMutation({
+    mutationFn: async (userInput: string) => {
+      const response = await axios.post(
+        `${baseEndpoint}/agent`,
+        { message: userInput },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      return response.data.response;
     },
-    []
-  );
+  });
 
   useEffect(() => {
-    // Only process non-empty, new input.
+    // Only process non-empty and new input.
     if (input.trim() === "" || lastProcessedInput.current === input) return;
     lastProcessedInput.current = input;
-
     const timestamp = Date.now();
 
-    // Dispatch the user’s message.
-    const userMessage: ChatMessage = {
-      id: `user-${timestamp}`,
-      sender: "user",
-      text: input,
-      timestamp,
-    };
-    dispatch({ type: "ADD_MESSAGE", payload: userMessage });
+    // Dispatch the user's message.
+    dispatch(
+      addMessage({
+        id: `user-${timestamp}`,
+        sender: "user",
+        text: input,
+        timestamp,
+      })
+    );
 
     // Dispatch a temporary AI message to show the typing indicator.
     const aiMessageId = `ai-${timestamp}`;
-    const tempAiMessage: ChatMessage = {
-      id: aiMessageId,
-      sender: "ai",
-      text: "",
-      timestamp: timestamp + 1,
-    };
-    dispatch({ type: "ADD_MESSAGE", payload: tempAiMessage });
+    dispatch(
+      addMessage({
+        id: aiMessageId,
+        sender: "ai",
+        text: "",
+        timestamp: timestamp + 1,
+      })
+    );
 
-    // Trigger the API call.
-    fetchAiResponse(input, aiMessageId);
-  }, [input, fetchAiResponse]);
+    // Trigger the API call via Tanstack Query.
+    mutation.mutate(input, {
+      onSuccess: (aiResponse: string) => {
+        dispatch(updateMessage({ id: aiMessageId, text: aiResponse }));
+      },
+      onError: () => {
+        dispatch(
+          updateMessage({ id: aiMessageId, text: "Error: Unable to fetch AI response." })
+        );
+      },
+    });
+  }, [input, dispatch, mutation]);
 
-  // (Optional) Ensure messages are sorted by timestamp.
+  // (Optional) Sort messages by timestamp.
   const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);
 
   return (
