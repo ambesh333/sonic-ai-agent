@@ -82,10 +82,11 @@ function IntroSection() {
     dispatch(setQuery(value));
   };
 
-  const handleSearchClick = () => {
-    // Enter chat mode using the current query.
+  const handleSearchClick = (selectedLabel?: string) => {
+    const labelToUse = selectedLabel ?? query;
     dispatch(setChatMode(true));
-    dispatch(setInput(query));
+    console.log("query in handleSearchClick", query);
+    dispatch(setInput(query || labelToUse));
     dispatch(setQuery(""));
   };
 
@@ -114,8 +115,6 @@ function IntroSection() {
         <Card className="w-full max-w-xl p-4 border border-border rounded-lg shadow-md">
           <ActionSearchBar
             actions={allActions}
-            query={query}
-            setQuery={handleInputChange}
             showSuggestions={true}
             onSearchClick={handleSearchClick}
           />
@@ -169,8 +168,6 @@ function ChatSection() {
         <Card className="w-full max-w-3xl px-4 border border-border rounded-lg shadow-md mx-auto">
           <ActionSearchBar
             actions={allActions}
-            query={query}
-            setQuery={handleInputChange}
             showSuggestions={false}
             onSearchClick={handleSearchClick}
           />

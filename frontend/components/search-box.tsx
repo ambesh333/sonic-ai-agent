@@ -1,64 +1,76 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines } from "lucide-react"
-import useDebounce from "@/hooks/use-debounce"
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { setQuery } from "@/store/chatSlice";
+import { Input } from "@/components/ui/input";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines } from "lucide-react";
+import useDebounce from "@/hooks/use-debounce";
 
 interface Action {
-  id: string
-  label: string
-  icon: React.ReactNode
-  description?: string
-  short?: string
-  end?: string
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  description?: string;
+  short?: string;
+  end?: string;
 }
 
 interface SearchResult {
-  actions: Action[]
+  actions: Action[];
 }
+
 interface ActionSearchBarProps {
   actions: Action[];
-  query: string;
-  setQuery: (query: string) => void;
   showSuggestions: boolean;
-  onSearchClick: () => void;
+  onSearchClick: (label: string) => void;
 }
 
-function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSearchClick }: ActionSearchBarProps) {
+export default function ActionSearchBar({
+  actions,
+  showSuggestions,
+  onSearchClick,
+}: ActionSearchBarProps) {
+  // Get the query from Redux
+  const query = useSelector((state: RootState) => state.chat.query);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [result, setResult] = useState<SearchResult | null>(null)
-  const [isFocused, setIsFocused] = useState(false)
-  const [isTyping, setIsTyping] = useState(false)
-  const [selectedAction, setSelectedAction] = useState<Action | null>(null)
-  const debouncedQuery = useDebounce(query, 200)
-  console.log("query", query)
+  // Local state for ephemeral UI state
+  const [result, setResult] = useState<SearchResult | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
+  const debouncedQuery = useDebounce(query, 200);
+
+  // Debug: log current query
+  console.log("query", query);
 
   useEffect(() => {
     if (!isFocused) {
-      setResult(null)
-      return
+      setResult(null);
+      return;
     }
 
     if (!debouncedQuery) {
-      setResult({ actions})
-      return
+      setResult({ actions });
+      return;
     }
 
-    const normalizedQuery = debouncedQuery.toLowerCase().trim()
+    const normalizedQuery = debouncedQuery.toLowerCase().trim();
     const filteredActions = actions.filter((action) => {
-      const searchableText = action.label.toLowerCase()
-      return searchableText.includes(normalizedQuery)
-    })
+      const searchableText = action.label.toLowerCase();
+      return searchableText.includes(normalizedQuery);
+    });
 
-    setResult({ actions: filteredActions })
-  }, [debouncedQuery, isFocused])
+    setResult({ actions: filteredActions });
+  }, [debouncedQuery, isFocused, actions]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-    setIsTyping(true)
-  }
+    dispatch(setQuery(e.target.value));
+    setIsTyping(true);
+  };
 
   const container = {
     hidden: { opacity: 0, height: 0 },
@@ -66,9 +78,7 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
       opacity: 1,
       height: "auto",
       transition: {
-        height: {
-          duration: 0.4,
-        },
+        height: { duration: 0.4 },
         staggerChildren: 0.1,
       },
     },
@@ -76,50 +86,48 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
       opacity: 0,
       height: 0,
       transition: {
-        height: {
-          duration: 0.3,
-        },
-        opacity: {
-          duration: 0.2,
-        },
+        height: { duration: 0.3 },
+        opacity: { duration: 0.2 },
       },
     },
-  }
+  };
 
   const item = {
     hidden: { opacity: 0, y: 20 },
     show: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.3,
-      },
+      transition: { duration: 0.3 },
     },
     exit: {
       opacity: 0,
       y: -10,
-      transition: {
-        duration: 0.2,
-      },
+      transition: { duration: 0.2 },
     },
-  }
-
-  const handleFocus = () => {
-    setSelectedAction(null)
-    setIsFocused(true)
-  }
-
-  const handleActionClick = (action: Action) => {
-    setSelectedAction(action);
-    setQuery(action.label);
-    onSearchClick();
   };
 
+  const handleFocus = () => {
+    setSelectedAction(null);
+    setIsFocused(true);
+  };
+
+  const handleActionClick = (action: Action) => {
+    console.log("action", action);
+    console.log("start query state", query);
+    console.log("action label", action.label);
+    setSelectedAction(action);
+    dispatch(setQuery(action.label));
+    console.log("end query state", query);
+    onSearchClick(action.label);
+  };
   return (
     <motion.div className="w-full max-w-xl mx-auto">
       <div className="relative flex flex-col justify-start items-center">
         <div className="w-full max-w-sm sticky top-0 bg-background z-10 pt-4 pb-1">
-          <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block" htmlFor="search">
+          <label
+            className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block"
+            htmlFor="search"
+          >
             Search Commands
           </label>
           <div className="relative">
@@ -132,7 +140,10 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               className="pl-3 pr-9 py-1.5 h-9 text-sm rounded-lg focus-visible:ring-offset-0"
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4" onClick={onSearchClick}>
+            <div
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
+              onClick={() => onSearchClick(query)}
+            >
               <AnimatePresence mode="popLayout">
                 {query.length > 0 ? (
                   <motion.div
@@ -162,7 +173,7 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
 
         <div className="w-full max-w-sm">
           <AnimatePresence>
-            {isFocused && result && !selectedAction && showSuggestions &&(
+            {isFocused && result && !selectedAction && showSuggestions && (
               <motion.div
                 className="w-full border rounded-md shadow-sm overflow-hidden dark:border-gray-800 bg-white dark:bg-black mt-1"
                 variants={container}
@@ -174,17 +185,17 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
                   {result.actions.map((action) => (
                     <motion.li
                       key={action.id}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
+                      className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900 cursor-pointer rounded-md"
                       variants={item}
                       layout
                       onClick={() => handleActionClick(action)}
                     >
-                      <div className="flex items-center gap-2 justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-500">{action.icon}</span>
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{action.label}</span>
-                          <span className="text-xs text-gray-400">{action.description}</span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-500">{action.icon}</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {action.label}
+                        </span>
+                        <span className="text-xs text-gray-400">{action.description}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-400">{action.short}</span>
@@ -199,8 +210,5 @@ function ActionSearchBar({ actions , query , setQuery , showSuggestions , onSear
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
-
-export default ActionSearchBar
-
