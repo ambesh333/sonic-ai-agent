@@ -1,10 +1,11 @@
-// store/chatSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ChatMessage {
   id: string;
   sender: "user" | "ai";
-  text: string;
+  text?: string;
+  uiType?: string;
+  payload?: any;
   timestamp: number;
 }
 
@@ -38,9 +39,16 @@ const chatSlice = createSlice({
     addMessage(state, action: PayloadAction<ChatMessage>) {
       state.messages.push(action.payload);
     },
-    updateMessage(state, action: PayloadAction<{ id: string; text: string }>) {
+    updateMessage(
+      state,
+      action: PayloadAction<{ id: string; text?: string; uiType?: string; payload?: any }>
+    ) {
       const msg = state.messages.find((m) => m.id === action.payload.id);
-      if (msg) msg.text = action.payload.text;
+      if (msg) {
+        if (action.payload.text !== undefined) msg.text = action.payload.text;
+        if (action.payload.uiType !== undefined) msg.uiType = action.payload.uiType;
+        if (action.payload.payload !== undefined) msg.payload = action.payload.payload;
+      }
     },
     clearMessages(state) {
       state.messages = [];
@@ -48,6 +56,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setQuery, setChatMode, setInput, addMessage, updateMessage, clearMessages } =
-  chatSlice.actions;
+export const { setQuery, setChatMode, setInput, addMessage, updateMessage, clearMessages } = chatSlice.actions;
 export default chatSlice.reducer;
