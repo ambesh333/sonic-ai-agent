@@ -1,5 +1,6 @@
 import { ChatMessage } from "@/types/chat";
 import React from "react";
+import TransactionCard from "./customUI/Tx";
 
 
 interface DynamicMessageRendererProps {
@@ -26,11 +27,15 @@ const ChartComponent: React.FC<{ config: any }> = ({ config }) => {
 };
 
 export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ message }) => {
+  console.log("DynamicMessageRenderer", message);
   switch (message.uiType) {
     case "text":
       return <span>{message.text}</span>;
     case "customTx":
-      return <CustomTxComponent data={message.payload} />;
+      return <TransactionCard
+      receiverAddress={message.payload.receiverAddress}
+      amount={message.payload.amount}
+    />;
     case "chart":
       return <ChartComponent config={message.payload} />;
     default:

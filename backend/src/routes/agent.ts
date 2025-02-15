@@ -64,9 +64,8 @@ router.post("/dummy_customTx", async (req: Request, res: Response) => {
       uiType: "customTx",
       text: `Dummy custom transaction response for: ${message}`,
       output: {
-        transactionId: "0x123abc456def",
-        amount: "0.01",
-        status: "pending"
+        receiverAddress: "0x99537334F44E532384Dd503fBB2fDFc4846641d4",
+        amount: "0.01"
       }
     };
     res.json({ response: responseMessage });
