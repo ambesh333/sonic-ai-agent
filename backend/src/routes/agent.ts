@@ -9,6 +9,7 @@ async function run(message: string) {
     const finalState = await graph.invoke({
       messages: [new HumanMessage(message)],
     });
+    console.log(finalState);
     return finalState.messages[finalState.messages.length - 1].content;
   }
 

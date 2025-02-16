@@ -11,9 +11,17 @@ const getWalletBalance = tool(
     try {
       const balanceWei = await provider.getBalance(walletAddress);
       const balanceEther = ethers.formatEther(balanceWei);
-      return `The balance of wallet ${walletAddress} is ${balanceEther} Sonic.`;
+      return {
+        uiType: "text",
+        text: `The balance for wallet ${walletAddress} is ${balanceEther} ETH.`,
+        walletAddress: walletAddress,
+        balance: balanceEther,
+      };
     } catch (error : any) {
-      return `Failed to get balance for wallet ${walletAddress}: ${error.message}`;
+      return {
+        uiType: "text",
+        text: `Failed to get balance for wallet ${walletAddress}: ${error.message}`,
+      };
     }
   },
   {
