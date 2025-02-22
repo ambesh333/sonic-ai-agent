@@ -101,7 +101,7 @@ function IntroSection() {
             </Button>
           ))}
         </div>
-        <Card className="w-full max-w-xl p-4 border border-border rounded-lg shadow-md">
+        <Card className="w-full max-w-xl p-4  rounded-lg shadow-md">
           <ActionSearchBar
             actions={allActions}
             showSuggestions={true}
@@ -154,15 +154,12 @@ function ChatSection() {
 
       {/* Fixed search bar at bottom */}
       <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <Card className="w-full max-w-3xl px-4 border border-border rounded-lg shadow-md mx-auto">
+        <Card className="w-full max-w-3xl px-4  rounded-lg shadow-md mx-auto">
           <ActionSearchBar
             actions={allActions}
             showSuggestions={false}
             onSearchClick={handleSearchClick}
           />
-          <Button variant="outline" className="w-full" onClick={handleBackClick}>
-            Back
-          </Button>
         </Card>
       </div>
     </motion.div>

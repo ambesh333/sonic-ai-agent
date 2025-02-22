@@ -46,9 +46,7 @@ router.post("/dummy_chart", async (req: Request, res: Response) => {
       uiType: "chart",
       text: `Dummy chart response for: ${message}`,
       output: {
-        chartType: "bar",
-        labels: ["January", "February", "March"],
-        data: [10, 20, 30]
+        symbol: "SONICUSD"
       }
     };
     res.json({ response: responseMessage });

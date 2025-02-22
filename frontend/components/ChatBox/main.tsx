@@ -23,7 +23,7 @@ export default function ChatBox() {
   const mutation = useMutation({
     mutationFn: async (userInput: string) => {
       const response = await axios.post(
-        `${baseEndpoint}/v1/agent/dummy_customTx`,
+        `${baseEndpoint}/v1/agent/dummy_chat`,
         { message: userInput },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -107,7 +107,7 @@ export default function ChatBox() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex flex-col w-full max-w-3xl h-full bg-transparent overflow-y-auto rounded-lg shadow-md p-4 mb-4 border border-border space-y-2"
+      className="flex flex-col w-full h-full bg-transparent overflow-y-auto rounded-lg  shadow-md p-4 mb-4 space-y-2 no-scrollbar"
     >
       <MessageList messages={sortedMessages} userAddress={address || ""} />
     </motion.div>
