@@ -27,7 +27,6 @@ const ChartComponent: React.FC<{ config: any }> = ({ config }) => {
 };
 
 export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ message }) => {
-  console.log("DynamicMessageRenderer", message);
   switch (message.uiType) {
     case "text":
       return <span>{message.text}</span>;

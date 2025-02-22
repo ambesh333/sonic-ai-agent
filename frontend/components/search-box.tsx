@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from "@/store/store";
 import { setQuery } from "@/store/chatSlice";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Send, BarChart2, Globe, Video, PlaneTakeoff, AudioLines } from "lucide-react";
+import { Search, Send } from "lucide-react";
 import useDebounce from "@/hooks/use-debounce";
 
 interface Action {
@@ -33,45 +33,18 @@ export default function ActionSearchBar({
   showSuggestions,
   onSearchClick,
 }: ActionSearchBarProps) {
-  // Get the query from Redux
-  const query = useSelector((state: RootState) => state.chat.query);
+  // Redux state and dispatch
   const dispatch = useDispatch<AppDispatch>();
+  const query = useSelector((state: RootState) => state.chat.query);
+  const isProcessing = useSelector((state: RootState) => state.chat.isProcessing);
 
-  // Local state for ephemeral UI state
+  // Local state
   const [result, setResult] = useState<SearchResult | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const debouncedQuery = useDebounce(query, 200);
 
-  // Debug: log current query
-  console.log("query", query);
-
-  useEffect(() => {
-    if (!isFocused) {
-      setResult(null);
-      return;
-    }
-
-    if (!debouncedQuery) {
-      setResult({ actions });
-      return;
-    }
-
-    const normalizedQuery = debouncedQuery.toLowerCase().trim();
-    const filteredActions = actions.filter((action) => {
-      const searchableText = action.label.toLowerCase();
-      return searchableText.includes(normalizedQuery);
-    });
-
-    setResult({ actions: filteredActions });
-  }, [debouncedQuery, isFocused, actions]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setQuery(e.target.value));
-    setIsTyping(true);
-  };
-
+  // Animation variants
   const container = {
     hidden: { opacity: 0, height: 0 },
     show: {
@@ -106,20 +79,55 @@ export default function ActionSearchBar({
     },
   };
 
+  // Filter actions based on search query
+  useEffect(() => {
+    if (!isFocused) {
+      setResult(null);
+      return;
+    }
+
+    if (!debouncedQuery) {
+      setResult({ actions });
+      return;
+    }
+
+    const normalizedQuery = debouncedQuery.toLowerCase().trim();
+    const filteredActions = actions.filter((action) => {
+      const searchableText = `${action.label} ${action.description || ""}`.toLowerCase();
+      return searchableText.includes(normalizedQuery);
+    });
+
+    setResult({ actions: filteredActions });
+  }, [debouncedQuery, isFocused, actions]);
+
+  // Event handlers
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setQuery(e.target.value));
+  };
+
   const handleFocus = () => {
     setSelectedAction(null);
     setIsFocused(true);
   };
 
+  const handleBlur = () => {
+    // Delay hiding suggestions to allow for click events
+    setTimeout(() => setIsFocused(false), 200);
+  };
+
   const handleActionClick = (action: Action) => {
-    console.log("action", action);
-    console.log("start query state", query);
-    console.log("action label", action.label);
+    if (isProcessing) return; // Prevent action if processing
     setSelectedAction(action);
     dispatch(setQuery(action.label));
-    console.log("end query state", query);
     onSearchClick(action.label);
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isProcessing || !query.trim()) return; // Prevent submission if processing or empty
+    onSearchClick(query);
+  };
+
   return (
     <motion.div className="w-full max-w-xl mx-auto">
       <div className="relative flex flex-col justify-start items-center">
@@ -130,19 +138,22 @@ export default function ActionSearchBar({
           >
             Search Commands
           </label>
-          <div className="relative">
+          <form onSubmit={handleSubmit} className="relative">
             <Input
               type="text"
+              id="search"
               placeholder="What's up?"
               value={query}
               onChange={handleInputChange}
               onFocus={handleFocus}
-              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+              onBlur={handleBlur}
+              disabled={isProcessing}
               className="pl-3 pr-9 py-1.5 h-9 text-sm rounded-lg focus-visible:ring-offset-0"
             />
-            <div
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
-              onClick={() => onSearchClick(query)}
+            <button
+              type="submit"
+              disabled={isProcessing || !query.trim()}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 disabled:opacity-50"
             >
               <AnimatePresence mode="popLayout">
                 {query.length > 0 ? (
@@ -167,8 +178,8 @@ export default function ActionSearchBar({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          </div>
+            </button>
+          </form>
         </div>
 
         <div className="w-full max-w-sm">
@@ -195,11 +206,9 @@ export default function ActionSearchBar({
                         <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {action.label}
                         </span>
-                        <span className="text-xs text-gray-400">{action.description}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">{action.short}</span>
-                        <span className="text-xs text-gray-400 text-right">{action.end}</span>
+                        {action.description && (
+                          <span className="text-xs text-gray-400">{action.description}</span>
+                        )}
                       </div>
                     </motion.li>
                   ))}

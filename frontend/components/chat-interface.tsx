@@ -11,11 +11,11 @@ import { setQuery, setChatMode, setInput } from "@/store/chatSlice";
 import {
   Search,
   Send,
-  BarChart2,
+  Strikethrough,
   Globe,
-  Video,
-  PlaneTakeoff,
-  AudioLines,
+  Fuel,
+  CircleDollarSign,
+  ChartNoAxesCombined,
 } from "lucide-react";
 
 const tags = [
@@ -29,43 +29,33 @@ const tags = [
 const allActions = [
   {
     id: "1",
-    label: "Book tickets",
-    icon: <PlaneTakeoff className="h-4 w-4 text-blue-500" />,
-    description: "Operator",
-    short: "⌘K",
-    end: "Agent",
+    label: "Balance",
+    icon: <CircleDollarSign className="h-4 w-4 text-blue-500" />,
+    description: "Get your account balance"
   },
   {
     id: "2",
-    label: "Summarize",
-    icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
-    description: "gpt-4o",
-    short: "⌘cmd+p",
-    end: "Command",
+    label: "Send Sonic Tokens",
+    icon: <Strikethrough className="h-4 w-4 text-orange-500" />,
+    description: "Send tokens to another address"
   },
   {
     id: "3",
-    label: "Screen Studio",
-    icon: <Video className="h-4 w-4 text-purple-500" />,
-    description: "gpt-4o",
-    short: "",
-    end: "Application",
+    label: "Get Gas Estimate",
+    icon: <Fuel className="h-4 w-4 text-purple-500" />,
+    description: "Estimate gas for a transaction"
   },
   {
     id: "4",
-    label: "Talk to Jarvis",
-    icon: <AudioLines className="h-4 w-4 text-green-500" />,
-    description: "gpt-4o voice",
-    short: "",
-    end: "Active",
+    label: "Chart",
+    icon: <ChartNoAxesCombined className="h-4 w-4 text-green-500" />,
+    description: "Get Sonic token price chart"
   },
   {
     id: "5",
     label: "Translate",
     icon: <Globe className="h-4 w-4 text-blue-500" />,
-    description: "gpt-4o",
-    short: "",
-    end: "Command",
+    description: "gpt-4o"
   },
 ];
 
@@ -85,7 +75,6 @@ function IntroSection() {
   const handleSearchClick = (selectedLabel?: string) => {
     const labelToUse = selectedLabel ?? query;
     dispatch(setChatMode(true));
-    console.log("query in handleSearchClick", query);
     dispatch(setInput(query || labelToUse));
     dispatch(setQuery(""));
   };
