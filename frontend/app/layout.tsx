@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ReduxProviders>
             <Wagmi>
               <SidebarProvider>
-                <AppSidebar />
+                {/* <AppSidebar /> */}
                 {children}
               </SidebarProvider>
             </Wagmi>

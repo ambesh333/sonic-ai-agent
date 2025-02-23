@@ -23,17 +23,19 @@ export default function ChatBox() {
   const mutation = useMutation({
     mutationFn: async (userInput: string) => {
       const response = await axios.post(
-        `${baseEndpoint}/v1/agent/dummy_chat`,
-        { message: userInput },
+        `${baseEndpoint}/v1/agent/chat`,
+        { content: userInput ,
+          userId : address
+        },
         { headers: { "Content-Type": "application/json" } }
       );
-      return response.data.response;
+      console.log("response",response.data);
+      return response.data;
     },
   });
 
   useEffect(() => {
     const processMessage = async () => {
-      // Return early if conditions aren't met
       if (!input || isProcessing || processedInputs.current.has(input)) {
         return;
       }
@@ -43,13 +45,8 @@ export default function ChatBox() {
       const aiMessageId = `ai-${timestamp}`;
 
       try {
-        // Mark this input as processed
         processedInputs.current.add(input);
-        
-        // Set processing flag
         dispatch(setIsProcessing(true));
-
-        // Add user message
         dispatch(
           addMessage({
             id: messageId,
@@ -58,8 +55,6 @@ export default function ChatBox() {
             timestamp,
           })
         );
-
-        // Add temporary AI message
         dispatch(
           addMessage({
             id: aiMessageId,
@@ -69,23 +64,18 @@ export default function ChatBox() {
           })
         );
 
-        // Get AI response
         const aiResponse = await mutation.mutateAsync(input);
-
-        // Update AI message with response
+        console.log("aipresponse",aiResponse);
         dispatch(
           updateMessage({
             id: aiMessageId,
-            text: aiResponse.text || "",
+            text: aiResponse.messages || "", 
             uiType: aiResponse.uiType,
             payload: aiResponse.output,
           })
         );
-
-        // Clear the input after processing
         dispatch(setInput(""));
       } catch (error) {
-        // Handle error
         dispatch(
           updateMessage({
             id: aiMessageId,
@@ -93,7 +83,6 @@ export default function ChatBox() {
           })
         );
       } finally {
-        // Reset processing flag
         dispatch(setIsProcessing(false));
       }
     };
