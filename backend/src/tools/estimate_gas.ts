@@ -19,12 +19,14 @@ const estimateGas = tool(
         : "N/A";
 
       return {
-        currentGasPrice,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
+        uiType: "text",
+        text: `Gas fees: current: ${currentGasPrice}, maxFee: ${maxFeePerGas}, maxPriorityFee: ${maxPriorityFeePerGas} agent chat response`,
       };
     } catch (error: any) {
-      return `Failed to estimate gas: ${error.message}`;
+      return {
+        uiType: "text",
+        text: `Failed to estimate gas: ${error.message}`,
+      };
     }
   },
   {

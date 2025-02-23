@@ -14,9 +14,8 @@ export function Header() {
                     <h1 className="text-xl font-bold">Social Oracle</h1>
                 </div>
                 <div className="flex  items-center gap-4">
-                    <SendTransaction/>
-                    <ModeToggle />
                     <ConnectWallet />
+                    <ModeToggle />
                 </div>
             </div>
         </header>

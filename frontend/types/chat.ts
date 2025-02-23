@@ -5,5 +5,6 @@ export interface ChatMessage {
     uiType?: string;     // type of UI to render (e.g. "text", "customTx", "chart")
     payload?: any;       // additional data for rendering
     timestamp: number;
+    symbol?: string;     // symbol for the message
   }
   

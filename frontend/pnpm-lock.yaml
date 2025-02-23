@@ -185,6 +185,9 @@ importers:
       react-resizable-panels:
         specifier: ^2.1.7
         version: 2.1.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-ts-tradingview-widgets:
+        specifier: ^1.2.8
+        version: 1.2.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       recharts:
         specifier: latest
         version: 2.15.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3645,6 +3648,12 @@ packages:
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
+
+  react-ts-tradingview-widgets@1.2.8:
+    resolution: {integrity: sha512-ozJwn+0x+Kp2DcqoB9LTDWQHyv3JCdfShb8ooHo+ZB9xjKAXW0irD/gK1deWv4oaAnTxmzKLfmr1QNfAhv+MJw==}
+    peerDependencies:
+      react: ^17.0.2 || ^18.1.0 || ^19.0.0
+      react-dom: ^17.0.2 || ^18.1.0 || ^19.0.0
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -8101,6 +8110,11 @@ snapshots:
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  react-ts-tradingview-widgets@1.2.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 

@@ -1,6 +1,7 @@
 import React, { memo } from "react";
-import { MessageItem } from "./MessageItem";
+
 import { ChatMessage } from "@/types/chat";
+import MessageItem from "./MessageItem";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -9,11 +10,11 @@ interface MessageListProps {
 
 export const MessageList: React.FC<MessageListProps> = memo(({ messages, userAddress }) => {
   return (
-    <>
+    <div className="space-y-4">
       {messages.map((msg) => (
         <MessageItem key={msg.id} message={msg} userAddress={userAddress} />
       ))}
-    </>
+    </div>
   );
 });
 MessageList.displayName = "MessageList";

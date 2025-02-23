@@ -14,6 +14,7 @@ interface ChatState {
   chatMode: boolean;
   input: string;
   messages: ChatMessage[];
+  isProcessing: boolean; // New state for tracking message processing
 }
 
 const initialState: ChatState = {
@@ -21,6 +22,7 @@ const initialState: ChatState = {
   chatMode: false,
   input: "",
   messages: [],
+  isProcessing: false, // Initialize processing state
 };
 
 const chatSlice = createSlice({
@@ -53,8 +55,20 @@ const chatSlice = createSlice({
     clearMessages(state) {
       state.messages = [];
     },
+    setIsProcessing(state, action: PayloadAction<boolean>) {
+      state.isProcessing = action.payload;
+    },
   },
 });
 
-export const { setQuery, setChatMode, setInput, addMessage, updateMessage, clearMessages } = chatSlice.actions;
+export const { 
+  setQuery, 
+  setChatMode, 
+  setInput, 
+  addMessage, 
+  updateMessage, 
+  clearMessages,
+  setIsProcessing 
+} = chatSlice.actions;
+
 export default chatSlice.reducer;

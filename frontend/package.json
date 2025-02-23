@@ -68,6 +68,7 @@
     "react-jazzicon": "^1.0.4",
     "react-redux": "^9.2.0",
     "react-resizable-panels": "^2.1.7",
+    "react-ts-tradingview-widgets": "^1.2.8",
     "recharts": "latest",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
