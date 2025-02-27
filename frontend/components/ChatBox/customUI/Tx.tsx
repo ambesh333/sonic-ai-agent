@@ -96,7 +96,7 @@ interface TransactionCardProps {
 }
 
 function shortenAddress(address: string, chars = 6): string {
-      return `${address.substring(0, chars)}...${address.substring(address.length - 4)}`;
+      return `${address?.substring(0, chars)}...${address?.substring(address?.length - 4)}`;
     }
 
 export default function TransactionCard({

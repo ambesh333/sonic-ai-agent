@@ -6,11 +6,10 @@ import { useAccount } from "wagmi";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
-import { addMessage, updateMessage, setIsProcessing, setInput } from "@/store/chatSlice";
-import { useMutation } from "@tanstack/react-query";
-import { MessageList } from "./MessageList";
+import { addMessage, updateMessage, setIsProcessing, setInput, setThreadId } from "@/store/chatSlice";
 
-const baseEndpoint = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+import { MessageList } from "./MessageList";
+import { useChatMutation } from "@/hooks/useChatMutation";
 
 export default function ChatBox() {
   const { address } = useAccount();
@@ -18,21 +17,10 @@ export default function ChatBox() {
   const messages = useSelector((state: RootState) => state.chat.messages);
   const input = useSelector((state: RootState) => state.chat.input);
   const isProcessing = useSelector((state: RootState) => state.chat.isProcessing);
+  const threadId = useSelector((state: RootState) => state.chat.threadId);
   const processedInputs = useRef<Set<string>>(new Set());
 
-  const mutation = useMutation({
-    mutationFn: async (userInput: string) => {
-      const response = await axios.post(
-        `${baseEndpoint}/v1/agent/chat`,
-        { content: userInput ,
-          userId : address
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      console.log("response",response.data);
-      return response.data;
-    },
-  });
+  const mutation = useChatMutation(address, threadId);
 
   useEffect(() => {
     const processMessage = async () => {
@@ -75,7 +63,11 @@ export default function ChatBox() {
           })
         );
         dispatch(setInput(""));
+        if (aiResponse.threadId) {
+          dispatch(setThreadId(aiResponse.threadId)); 
+        }
       } catch (error) {
+        console.error("Error processing message:", error);
         dispatch(
           updateMessage({
             id: aiMessageId,

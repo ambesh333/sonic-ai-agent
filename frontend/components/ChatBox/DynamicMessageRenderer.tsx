@@ -14,13 +14,13 @@ export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ 
       return <ChatBubble text={message.text || ""} sender={message.sender} />;
     case "customTx":
       return <TransactionCard
-        receiverAddress={message.payload.receiverAddress}
-        amount={message.payload.amount}
+        receiverAddress={message.payload?.receiverAddress}
+        amount={message.payload?.amount}
       />;
     case 'chart':
       return message.payload?.symbol ? (
         <div className="w-full">
-          <TradingViewChart symbol={message.payload.symbol} />
+          <TradingViewChart symbol={message.payload?.symbol} />
         </div>
       ) : (
         <span>Symbol not available</span>
