@@ -87,9 +87,7 @@ function IntroSection() {
       exit={{ opacity: 0, transition: { duration: 0.3 } }}
       className="flex flex-col w-full max-w-3xl divide-y divide-transparent"
     >
-      {/* Spacer */}
       <div className="h-2/7"></div>
-      {/* Main content */}
       <div className="h-3/7 flex flex-col items-center">
         <h2 className="text-3xl font-bold text-center mb-4">
           What do you want to do?
@@ -128,7 +126,6 @@ function ChatSection() {
     dispatch(setQuery(value));
   };
 
-  // (Optional) In chat mode you might still want to re-trigger a search action.
   const handleSearchClick = () => {
     dispatch(setChatMode(true));
     dispatch(setInput(query));
@@ -145,16 +142,13 @@ function ChatSection() {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
-      className="relative flex flex-col w-full max-w-3xl h-full h-svh max-h-[calc(100vh-10rem)]"
+      className="relative w-full max-w-3xl mx-auto min-h-[calc(100vh-5rem)] flex flex-col"
     >
-      {/* Chat area */}
-      <div className="flex-1 pb-32 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 overflow-y-scroll overflow-x-hidden pr-4 pb-20 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
         <ChatBox />
       </div>
-
-      {/* Fixed search bar at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <Card className="w-full max-w-3xl px-4  rounded-lg shadow-md mx-auto">
+      <div className="sticky bottom-0 left-0 right-0 px-4 py-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10">
+        <Card className="w-full rounded-lg shadow-md">
           <ActionSearchBar
             actions={allActions}
             showSuggestions={false}
