@@ -18,7 +18,7 @@ export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ 
         amount={message.payload.amount}
       />;
     case 'chart':
-      return message.payload.symbol ? (
+      return message.payload?.symbol ? (
         <div className="w-full">
           <TradingViewChart symbol={message.payload.symbol} />
         </div>
