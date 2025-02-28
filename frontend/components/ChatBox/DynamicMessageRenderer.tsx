@@ -11,7 +11,7 @@ interface DynamicMessageRendererProps {
 export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ message }) => {
   switch (message.uiType) {
     case "text":
-      return <ChatBubble text={message.text || ""} sender={message.sender} />;
+      return <ChatBubble text={message.text || ""} sender={message.sender} toolName={message.payload?.tool_calls}/>;
     case "customTx":
       return <TransactionCard
         receiverAddress={message.payload?.receiverAddress}
