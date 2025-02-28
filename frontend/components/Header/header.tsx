@@ -1,9 +1,9 @@
 import { Wallet } from "lucide-react";
-import { ModeToggle } from "../mode-toggle";
 import { Button } from "../ui/button";
 import { SidebarTrigger } from "../ui/sidebar";
 import { ConnectWallet } from "./connectWallet";
 import { SendTransaction } from "./sendTnx";
+import Link from "next/link";
 
 export function Header() {
     return (
@@ -11,11 +11,13 @@ export function Header() {
             <div className="container flex items-center justify-between h-16 px-4">
                 <div className="flex items-center gap-4">
                     <SidebarTrigger />
-                    <h1 className="text-xl font-bold">Social Oracle</h1>
+                    <Link href="/" className="text-xl font-bold">
+                        Social Oracle
+                    </Link>
+
                 </div>
                 <div className="flex  items-center gap-4">
                     <ConnectWallet />
-                    <ModeToggle />
                 </div>
             </div>
         </header>
