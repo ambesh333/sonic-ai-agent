@@ -12,7 +12,7 @@ export function Header() {
                 <div className="flex items-center gap-4">
                     <SidebarTrigger />
                     <Link href="/" className="text-xl font-bold">
-                        Social Oracle
+                        Sonic Chat
                     </Link>
 
                 </div>
