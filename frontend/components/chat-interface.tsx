@@ -17,13 +17,13 @@ import {
   CircleDollarSign,
   ChartNoAxesCombined,
 } from "lucide-react";
+import { useAccount } from "wagmi";
 
 const tags = [
-  "Clean account fields",
-  "Clean contact fields",
-  "Create master 'People' list",
-  "Account Fit Score",
-  "Match leads to account",
+  "Get account balance",
+  "Send tokens",
+  "Estimate gas",
+  "Get token price chart",
 ];
 
 const allActions = [
@@ -65,6 +65,7 @@ const allActions = [
    - Uses Redux to read and update the query.
 ------------------------------------------------------------------------- */
 function IntroSection() {
+  const { address } = useAccount();
   const dispatch = useDispatch<AppDispatch>();
   const query = useSelector((state: RootState) => state.chat.query);
 
@@ -73,7 +74,13 @@ function IntroSection() {
   };
 
   const handleSearchClick = (selectedLabel?: string) => {
-    const labelToUse = selectedLabel ?? query;
+    let labelToUse = selectedLabel ?? query;
+    if (labelToUse === "Balance") {
+      labelToUse = `Balance of ${address}`;
+    }
+    if (labelToUse === "Chart") {
+      labelToUse = `Give chart for Bitcoin token`;
+    }
     dispatch(setChatMode(true));
     dispatch(setInput(query || labelToUse));
     dispatch(setQuery(""));
