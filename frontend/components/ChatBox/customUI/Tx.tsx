@@ -209,7 +209,7 @@ export default function TransactionCard({
             <span className="text-xs font-medium text-gray-400">
               {status === "pending" ? "Amount Sending" : "Amount Sent"}
             </span>
-            <span className="font-medium text-gray-100 tracking-tight">{amount} ETH</span>
+            <span className="font-medium text-gray-100 tracking-tight">{amount} SONIC</span>
           </div>
           {/* Gas Fees Detail (only when not pending) */}
           {status !== "pending" && (
@@ -217,7 +217,7 @@ export default function TransactionCard({
               <span className="text-xs font-medium text-gray-400">Gas Fees</span>
               <span className="font-medium text-gray-100 tracking-tight">
                 {receipt?.gasUsed && receipt?.effectiveGasPrice
-                  ? `${(parseFloat(receipt.gasUsed.toString()) * parseFloat(receipt.effectiveGasPrice.toString()) / 1e18).toFixed(6)} ETH`
+                  ? `${(parseFloat(receipt.gasUsed.toString()) * parseFloat(receipt.effectiveGasPrice.toString()) / 1e18).toFixed(6)} SONIC`
                   : "Pending"}
               </span>
             </div>

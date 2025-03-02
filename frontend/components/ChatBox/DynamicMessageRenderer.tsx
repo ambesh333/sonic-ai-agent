@@ -3,6 +3,7 @@ import React from "react";
 import TransactionCard from "./customUI/Tx";
 import TradingViewChart from "./customUI/chart";
 import ChatBubble from "./customUI/Chat";
+import {TransactionTable} from "./customUI/trxnHistory";
 
 interface DynamicMessageRendererProps {
   message: ChatMessage;
@@ -25,6 +26,8 @@ export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ 
       ) : (
         <span>Symbol not available</span>
       );
+    case 'trnxHistory':
+      return <TransactionTable transactions={message.payload?.trxn} />;
 
     default:
       return <span>{message.text}</span>;

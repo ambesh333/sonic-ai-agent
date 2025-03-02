@@ -19,7 +19,8 @@ export const useChatMutation = (address: any, threadId: string | null) => {
           receiverAddress: response.data?.walletAddress,
           amount: response.data?.amount,
           symbol: response.data?.token,
-          tool_calls: response.data.tool_calls
+          tool_calls: response.data?.tool_calls,
+          trxn: response.data?.trxn
         },
         threadId: response.data.threadId
       };
