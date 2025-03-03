@@ -4,6 +4,7 @@ import TransactionCard from "./customUI/Tx";
 import TradingViewChart from "./customUI/chart";
 import ChatBubble from "./customUI/Chat";
 import {TransactionTable} from "./customUI/trxnHistory";
+import PricePrediction from "./customUI/PricePrediction";
 
 interface DynamicMessageRendererProps {
   message: ChatMessage;
@@ -28,6 +29,8 @@ export const DynamicMessageRenderer: React.FC<DynamicMessageRendererProps> = ({ 
       );
     case 'trnxHistory':
       return <TransactionTable transactions={message.payload?.trxn} />;
+    case 'alloraPrediction':
+      return <PricePrediction prediction={message.payload?.prediction} />;
 
     default:
       return <span>{message.text}</span>;
