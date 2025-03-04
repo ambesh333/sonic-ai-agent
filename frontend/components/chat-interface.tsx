@@ -49,13 +49,13 @@ const allActions = [
     id: "4",
     label: "Chart",
     icon: <ChartNoAxesCombined className="h-4 w-4 text-green-500" />,
-    description: "Get Sonic token price chart"
+    description: "Get Bitcoin token price chart"
   },
   {
     id: "5",
-    label: "Translate",
+    label: "Prediction",
     icon: <Globe className="h-4 w-4 text-blue-500" />,
-    description: "gpt-4o"
+    description: "Get price prediction for Bitcoin"
   },
 ];
 
@@ -80,6 +80,9 @@ function IntroSection() {
     }
     if (labelToUse === "Chart") {
       labelToUse = `Give chart for Bitcoin token`;
+    }
+    if (labelToUse === "Prediction") {
+      labelToUse = `Predict Bitcoin price`;
     }
     dispatch(setChatMode(true));
     dispatch(setInput(query || labelToUse));

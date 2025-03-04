@@ -171,13 +171,6 @@ const MarketInsights = () => {
               ))}
             </div>
             
-            <motion.button
-              className="w-full mt-6 py-3 rounded-lg bg-white/10 text-center text-sm font-medium hover:bg-white/15 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              View All Assets
-            </motion.button>
           </motion.div>
         </div>
       </div>

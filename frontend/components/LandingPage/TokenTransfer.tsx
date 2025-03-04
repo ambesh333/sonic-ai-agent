@@ -154,12 +154,11 @@ const TokenTransfer = () => {
             </div>
             
             <div className="border-t border-white/10 p-4">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Type your message..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                />
+                <div className="flex gap-2">
+                <div className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-gray-500">
+                  Type your message...
+                </div>
+                
                 <motion.button
                   className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600"
                   whileHover={{ scale: 1.05 }}
@@ -167,7 +166,7 @@ const TokenTransfer = () => {
                 >
                   <ArrowRight className="w-5 h-5" />
                 </motion.button>
-              </div>
+                </div>
             </div>
           </motion.div>
           
