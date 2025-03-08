@@ -20,7 +20,8 @@ export const useChatMutation = (address: any, threadId: string | null) => {
           amount: response.data?.amount,
           symbol: response.data?.token,
           tool_calls: response.data?.tool_calls,
-          trxn: response.data?.trxn
+          trxn: response.data?.trxn,
+          prediction : response.data?.prediction,
         },
         threadId: response.data.threadId
       };

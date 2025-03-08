@@ -94,25 +94,7 @@ const FAQ = () => {
           ))}
         </div>
         
-        <motion.div 
-          className="mt-12 p-6 border border-white/10 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-600/10 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-xl font-bold mb-2">Still have questions?</h3>
-          <p className="text-gray-300 mb-4">
-            Our support team is ready to help you with any questions you may have.
-          </p>
-          <motion.button
-            className="bg-white/10 backdrop-blur-sm px-6 py-2 rounded-full font-medium"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contact Support
-          </motion.button>
-        </motion.div>
+
       </div>
     </section>
   );
