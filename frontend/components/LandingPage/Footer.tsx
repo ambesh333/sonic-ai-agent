@@ -11,10 +11,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center w-full">
             <p className="text-gray-400 text-sm">© 2025 SonicChat. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="https://twitter.com/your_twitter" className="text-gray-400 hover:text-white text-sm transition-colors">
+              <a href="https://x.com/0xAmbesh" className="text-gray-400 hover:text-white text-sm transition-colors">
                 Ambesh's Twitter
               </a>
-              <a href="https://twitter.com/friend_twitter" className="text-gray-400 hover:text-white text-sm transition-colors">
+              <a href="https://x.com/0xAlchemist1411" className="text-gray-400 hover:text-white text-sm transition-colors">
                 Deepak's Twitter
               </a>
             </div>
