@@ -4,19 +4,43 @@ import { motion } from 'framer-motion';
 import { ArrowDown, MessageCircle } from 'lucide-react';
 import { ConnectWallet } from '../Header/connectWallet';
 
+const VideoModal = ({  onClose }) => {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+      onClick={onClose}  
+    >
+      <div
+        className="relative bg-black rounded-lg overflow-hidden w-3/5 h-3/5"
+        onClick={(e) => e.stopPropagation()} 
+      >
+        <button 
+          className="absolute top-2 right-2 z-10 text-white text-xl font-bold"
+          onClick={onClose}
+        >
+          &times;
+        </button>
+        <video
+          src='/FullDemo.mp4'
+          controls
+          autoPlay
+          playsInline
+          className="w-full h-full"
+        />
+      </div>
+    </div>
+  );
+};
 
 const HeroSection = () => {
   const [typingComplete, setTypingComplete] = useState(false);
-  
-  // Animation variants
+  const [showModal, setShowModal] = useState(false);
+  const demoVideoSrc = "/AiChat.mp4"; 
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3,
-      }
+      transition: { staggerChildren: 0.1, delayChildren: 0.3 }
     }
   };
   
@@ -25,7 +49,6 @@ const HeroSection = () => {
     show: { y: 0, opacity: 1, transition: { duration: 0.5 } }
   };
 
-  // Typing animation text
   const phrases = [
     "Send tokens instantly.",
     "Get real-time market insights.",
@@ -40,34 +63,27 @@ const HeroSection = () => {
   
   useEffect(() => {
     const typingTimer = setTimeout(() => {
-      // Current phrase being typed
       const currentText = phrases[phraseIndex];
       
       if (isDeleting) {
-        // Deleting text
         setCurrentPhrase(currentText.substring(0, charIndex - 1));
-        setCharIndex(prev => prev - 1);
-        setTypingSpeed(50); // Faster when deleting
+        setCharIndex((prev) => prev - 1);
+        setTypingSpeed(50);
       } else {
-        // Typing text
         setCurrentPhrase(currentText.substring(0, charIndex + 1));
-        setCharIndex(prev => prev + 1);
-        setTypingSpeed(100); // Normal typing speed
+        setCharIndex((prev) => prev + 1);
+        setTypingSpeed(100);
       }
       
-      // Check if word is complete
       if (!isDeleting && charIndex === currentText.length) {
-        // Pause at the end of phrase
-        setTypingSpeed(2000); // Pause before deleting
+        setTypingSpeed(2000);
         setIsDeleting(true);
       } else if (isDeleting && charIndex === 0) {
-        // Move to next phrase
         setIsDeleting(false);
         setPhraseIndex((prev) => (prev + 1) % phrases.length);
-        setTypingSpeed(500); // Pause before typing next word
+        setTypingSpeed(500);
       }
       
-      // Set typing complete after going through all phrases once
       if (phraseIndex === phrases.length - 1 && charIndex === currentText.length && !typingComplete) {
         setTypingComplete(true);
       }
@@ -77,7 +93,7 @@ const HeroSection = () => {
   }, [charIndex, isDeleting, phraseIndex, phrases, typingSpeed, typingComplete]);
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-20">
+    <section className="min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-20 relative">
       <motion.div
         className="max-w-5xl mx-auto text-center"
         variants={container}
@@ -115,15 +131,15 @@ const HeroSection = () => {
           variants={item}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
-       <ConnectWallet landing />
-          
-            <motion.button
+          <ConnectWallet landing />
+          <motion.button
             className="w-full sm:w-auto bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-2 rounded-lg font-medium text-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            >
+            onClick={() => setShowModal(true)}
+          >
             Watch Demo
-            </motion.button>
+          </motion.button>
         </motion.div>
       </motion.div>
       
@@ -146,6 +162,13 @@ const HeroSection = () => {
       {/* Floating elements for visual interest */}
       <div className="absolute top-1/4 left-10 w-64 h-64 bg-blue-500/20 rounded-full filter blur-3xl"></div>
       <div className="absolute bottom-1/4 right-10 w-64 h-64 bg-purple-500/20 rounded-full filter blur-3xl"></div>
+
+      {/* Video Modal */}
+      {showModal && (
+        <VideoModal 
+          onClose={() => setShowModal(false)} 
+        />
+      )}
     </section>
   );
 };
