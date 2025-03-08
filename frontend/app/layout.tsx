@@ -12,7 +12,9 @@ import Wagmi from "@/components/ClientProviders";
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+      <link rel="icon" href="/icon.jpg" />
+      </head>
       <body>
         <ThemeProvider
           attribute="class"

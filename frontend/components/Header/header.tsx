@@ -10,7 +10,7 @@ export function Header() {
         <header className="border-b">
             <div className="container flex items-center justify-between h-16 px-4">
                 <div className="flex items-center gap-4">
-                    <SidebarTrigger />
+                    {/* <SidebarTrigger /> */}
                     <Link href="/" className="text-xl font-bold">
                         Sonic Chat
                     </Link>
